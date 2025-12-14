@@ -59,7 +59,7 @@ export default function Hero() {
 
         {/* Metinler */}
         <motion.p variants={itemVariants} className="text-gray-400 mb-4 tracking-widest text-sm uppercase">
-          Fullstack Developer & System Architect
+          Fullstack Developer & System Archıtect
         </motion.p>
 
         {/* Gradient Başlık */}

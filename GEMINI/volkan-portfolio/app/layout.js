@@ -1,31 +1,24 @@
-// app/layout.js
-
 import { Inter } from "next/font/google";
 import "./globals.css";
-// Yeni oluşturduğumuz Navbar bileşenini içeri aktar
-// Doğru: Proje kökünden başlayan takma ad
-import Navbar from "@/components/Navbar";
+// 1. ADIM: Butonu buraya çağırıyoruz
+import WhatsAppButton from "@/components/WhatsAppButton";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Volkan | Creative Developer",
-  description: "Modern & Unique Portfolio built with Next.js and Framer Motion.",
+  title: "Volkan | Fullstack Developer",
+  description: "Modern web teknolojileri ile geliştirilmiş portfolyo.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="tr" className="scroll-smooth">
-      {/* bg-[#0a0a0a] ve antialiased class'larını globals.css'te ayarladık
-        Ama fontu burada ekliyoruz.
-      */}
-      <body className={`${inter.className} antialiased`}>
+    <html lang="en" className="scroll-smooth">
+      <body className={`${inter.className} bg-black text-white antialiased`}>
+        {/* Sayfanın asıl içeriği burada */}
+        {children}
 
-        {/* Navbar'ı en üste koyuyoruz ki, çocuk bileşenler (children) onun altında kalsın.
-          Bu bir Server Component'tir, ancak içinde Client Component (Navbar) çağırıyoruz.
-        */}
-        <Navbar />
-
-        <main>{children}</main>
+        {/* 2. ADIM: Butonu içeriğin altına (ama ekranın üstüne) ekliyoruz */}
+        <WhatsAppButton />
       </body>
     </html>
   );

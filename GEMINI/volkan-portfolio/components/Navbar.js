@@ -52,13 +52,18 @@ export default function Navbar() {
         </div>
 
         {/* CTA Butonu */}
-        <motion.button
-          whileHover={{ scale: 1.05 }} // Buton Hover efekti
+        {/* components/Navbar.js - Resume Butonu (Güncel ve Tasarıma Sadık) */}
+        {/* components/Navbar.js - Resume Butonu (Güncel ve Tasarıma Sadık) */}
+        <motion.a
+          href="/resume.pdf"
+          target="_blank"
+          download="Volkan_Ozkan_CV"
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="bg-white/10 px-5 py-2 rounded-full text-sm font-medium hover:bg-white/20 transition-all border border-white/5"
+          className="bg-white/10 px-5 py-2 rounded-full text-sm font-medium hover:bg-white/20 transition-all border border-white/5 cursor-pointer flex items-center justify-center text-white"
         >
           Resume İndir
-        </motion.button>
+        </motion.a>
       </div>
     </motion.nav>
   );
