@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link"; // Next.js Link bileşeni eklendi
+import Link from "next/link";
 
 export default function Contact() {
   const [status, setStatus] = useState(null);
@@ -16,25 +16,20 @@ export default function Contact() {
     formData.append("_subject", "Portfolyo Sitesinden Yeni Mesaj!");
     formData.append("_captcha", "false");
     formData.append("_template", "table");
+    // Spam koruması için honeypot (görünmez alan) ekleyebilirsiniz ama şimdilik basit tutuyoruz.
 
     const data = Object.fromEntries(formData.entries());
 
     setStatus("submitting");
 
     // -------------------------------------------------------------------
-    // AYAR: Buraya KENDİ E-POSTA ADRESİNİZİ yazın.
+    // AYAR: KENDİ E-POSTA ADRESİNİZ
     const MY_EMAIL = "volkangithub@gmail.com";
     // -------------------------------------------------------------------
 
     const ENDPOINT = `https://formsubmit.co/ajax/${MY_EMAIL}`;
 
-    if (MY_EMAIL === "volkangithub@gmail.com") {
-      setTimeout(() => {
-        form.reset();
-        setStatus("success");
-      }, 1500);
-      return;
-    }
+    // --- ESKİ SİMÜLASYON KODU SİLİNDİ, ARTIK GERÇEK GÖNDERİM YAPIYOR ---
 
     try {
       const response = await fetch(ENDPOINT, {
@@ -53,6 +48,7 @@ export default function Contact() {
         setStatus("error");
       }
     } catch (error) {
+      console.error("Form gönderme hatası:", error);
       setStatus("error");
     }
   }
@@ -149,7 +145,7 @@ export default function Contact() {
 
               {status === "error" && (
                 <p className="text-red-500 text-sm text-center bg-red-500/10 py-2 rounded-lg">
-                  Bir hata oluştu. E-posta adresinizi doğru yazdığınızdan emin olun.
+                  Bir hata oluştu. Lütfen tekrar deneyin.
                 </p>
               )}
             </form>
@@ -166,14 +162,14 @@ export default function Contact() {
             {/* Sosyal Medya Linkleri */}
             <div className="flex gap-6">
               <a
-                href="https://linkedin.com/in/volkan-özkan160293/" // BURAYI DÜZENLE
+                href="https://linkedin.com/in/volkan-özkan160293/"
                 target="_blank"
                 className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
               >
                 LinkedIn
               </a>
               <a
-                href="https://github.com/VolkanGithub" // BURAYI DÜZENLE
+                href="https://github.com/VolkanGithub"
                 target="_blank"
                 className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
               >
