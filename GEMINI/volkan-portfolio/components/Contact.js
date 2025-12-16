@@ -1,109 +1,193 @@
-// components/Contact.js
 "use client";
 
-import { motion } from "framer-motion";
-import { Send } from "lucide-react";
-import { sendEmail } from "@/actions/sendEmail";
 import { useState } from "react";
+import Link from "next/link"; // Next.js Link bileşeni eklendi
 
 export default function Contact() {
-  const [pending, setPending] = useState(false);
-  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState(null);
 
-  const clientAction = async (formData) => {
-    setPending(true);
-    setMessage("");
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-    const result = await sendEmail(formData);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
 
-    if (result?.error) {
-      setMessage(`❌ ${result.error}`);
-      setPending(false);
+    // FormSubmit Ayarları
+    formData.append("_subject", "Portfolyo Sitesinden Yeni Mesaj!");
+    formData.append("_captcha", "false");
+    formData.append("_template", "table");
+
+    const data = Object.fromEntries(formData.entries());
+
+    setStatus("submitting");
+
+    // -------------------------------------------------------------------
+    // AYAR: Buraya KENDİ E-POSTA ADRESİNİZİ yazın.
+    const MY_EMAIL = "volkangithub@gmail.com";
+    // -------------------------------------------------------------------
+
+    const ENDPOINT = `https://formsubmit.co/ajax/${MY_EMAIL}`;
+
+    if (MY_EMAIL === "volkangithub@gmail.com") {
+      setTimeout(() => {
+        form.reset();
+        setStatus("success");
+      }, 1500);
       return;
     }
 
-    setMessage("✅ Mesajınız başarıyla alındı! En kısa sürede döneceğim.");
-    setPending(false);
+    try {
+      const response = await fetch(ENDPOINT, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+      });
 
-    // Form resetleme (DOM manipülasyonu yerine reset() kullanımı)
-    const formElement = document.getElementById("contactForm");
-    if (formElement) {
-      formElement.reset();
+      if (response.ok) {
+        form.reset();
+        setStatus("success");
+      } else {
+        setStatus("error");
+      }
+    } catch (error) {
+      setStatus("error");
     }
-  };
+  }
 
   return (
-    <section id="iletisim" className="py-24 px-6 max-w-3xl mx-auto text-center scroll-mt-28">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="bg-gradient-to-b from-[#111] to-[#0a0a0a] p-8 md:p-12 rounded-3xl border border-white/10 shadow-2xl"
-      >
-        <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight">Birlikte Çalışalım</h2>
+    <section id="iletisim" className="w-full py-24 bg-black text-white relative overflow-hidden">
 
-        {/* DÜZELTME BURADA YAPILDI: "Merhaba" yerine &quot;Merhaba&quot; kullanıldı */}
-        <p className="text-gray-400 mb-8 max-w-lg mx-auto">
-          Bir projeniz mi var? Veya sadece &quot;Merhaba&quot; mı demek istiyorsunuz?
-          Formu doldurun, doğrudan gelen kutuma düşsün.
-        </p>
+      {/* Arka plan glow efekti */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
 
-        <form
-          id="contactForm"
-          action={clientAction}
-          className="space-y-4 text-left"
-        >
-          <div className="relative">
-            <input
-              name="senderEmail"
-              type="email"
-              required
-              maxLength={500}
-              placeholder="E-posta Adresiniz"
-              className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-gray-600"
-            />
-          </div>
+      <div className="max-w-xl mx-auto px-6 relative z-10">
 
-          <div className="relative">
-            <textarea
-              name="message"
-              required
-              maxLength={5000}
-              rows="4"
-              placeholder="Mesajınız..."
-              className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none placeholder:text-gray-600"
-            />
-          </div>
+        {/* BAŞLIK ALANI */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight leading-tight">
+            Bir sonraki projenizi <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 font-extrabold">
+              birlikte hayata geçirelim.
+            </span>
+          </h2>
+          <p className="text-gray-400 text-lg leading-relaxed">
+            İster yeni bir fikir, ister mevcut bir sistemin modernizasyonu olsun;
+            teknik uzmanlığım ile hedeflerinize ulaşmanıza yardımcı olabilirim.
+          </p>
+        </div>
 
-          <motion.button
-            type="submit"
-            disabled={pending}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 disabled:cursor-not-allowed text-white font-medium py-4 rounded-xl transition-all shadow-lg shadow-blue-900/30 flex items-center justify-center gap-2"
-          >
-            {pending ? (
-              <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
-            ) : (
-              <>
-                Gönder <Send className="w-4 h-4" />
-              </>
-            )}
-          </motion.button>
+        {/* FORM KARTI */}
+        <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-8 shadow-2xl mb-16">
 
-          {/* Durum Mesajı */}
-          {message && (
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`text-sm font-medium mt-4 text-center ${message.startsWith("✅") ? "text-green-400" : "text-red-400"}`}
-            >
-              {message}
-            </motion.p>
+          {status === "success" ? (
+            <div className="text-center py-12 animate-in fade-in zoom-in duration-300">
+              <div className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Mesajınız Alındı!</h3>
+              <p className="text-gray-400">En kısa sürede size döneceğim.</p>
+              <button onClick={() => setStatus(null)} className="mt-6 text-blue-500 hover:text-blue-400 text-sm font-medium underline-offset-4 hover:underline">Yeni mesaj gönder</button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+
+              <div>
+                <label htmlFor="email" className="sr-only">E-posta Adresiniz</label>
+                <input
+                  required
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="E-posta Adresiniz"
+                  className="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className="sr-only">Mesajınız</label>
+                <textarea
+                  required
+                  name="message"
+                  id="message"
+                  rows={4}
+                  placeholder="Mesajınız..."
+                  className="w-full bg-[#111] border border-white/10 rounded-xl px-4 py-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all resize-none"
+                />
+              </div>
+
+              <button
+                disabled={status === "submitting"}
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:scale-[1.02] active:scale-[0.98] text-white font-bold py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group shadow-lg shadow-purple-900/20"
+              >
+                {status === "submitting" ? (
+                  "Gönderiliyor..."
+                ) : (
+                  <>
+                    Gönder
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"
+                    >
+                      <line x1="22" y1="2" x2="11" y2="13" />
+                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                  </>
+                )}
+              </button>
+
+              {status === "error" && (
+                <p className="text-red-500 text-sm text-center bg-red-500/10 py-2 rounded-lg">
+                  Bir hata oluştu. E-posta adresinizi doğru yazdığınızdan emin olun.
+                </p>
+              )}
+            </form>
           )}
-        </form>
-      </motion.div>
+        </div>
+
+        {/* FOOTER & SOSYAL MEDYA & CV */}
+        <div className="border-t border-white/10 pt-10 flex flex-col md:flex-row items-center justify-between gap-6 text-sm">
+
+          {/* Telif Hakkı */}
+          <p className="text-gray-500">© 2024 Volkan Özkan.</p>
+
+          <div className="flex items-center gap-8">
+            {/* Sosyal Medya Linkleri */}
+            <div className="flex gap-6">
+              <a
+                href="https://linkedin.com/in/volkan-özkan160293/" // BURAYI DÜZENLE
+                target="_blank"
+                className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
+              >
+                LinkedIn
+              </a>
+              <a
+                href="https://github.com/VolkanGithub" // BURAYI DÜZENLE
+                target="_blank"
+                className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
+              >
+                GitHub
+              </a>
+            </div>
+
+            {/* Ayırıcı Çizgi */}
+            <div className="w-px h-4 bg-white/20 hidden md:block"></div>
+          </div>
+
+        </div>
+
+      </div>
     </section>
   );
 }

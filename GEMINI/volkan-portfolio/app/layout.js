@@ -1,7 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-// 1. ADIM: Butonu buraya çağırıyoruz
+
+// BİLEŞENLERİMİZİ ÇAĞIRIYORUZ
 import WhatsAppButton from "@/components/WhatsAppButton";
+import Navbar from "@/components/Navbar"; // <-- İŞTE EKSİK OLAN PARÇA!
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,11 +16,18 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} bg-black text-white antialiased`}>
-        {/* Sayfanın asıl içeriği burada */}
-        {children}
 
-        {/* 2. ADIM: Butonu içeriğin altına (ama ekranın üstüne) ekliyoruz */}
+        {/* 1. ADIM: Navbar en tepede duracak */}
+        <Navbar />
+
+        {/* 2. ADIM: Sayfanın geri kalanı (Hero, Services vs.) burada */}
+        <main>
+          {children}
+        </main>
+
+        {/* 3. ADIM: WhatsApp butonu en altta (ama ekranın üstünde yüzer) */}
         <WhatsAppButton />
+
       </body>
     </html>
   );
