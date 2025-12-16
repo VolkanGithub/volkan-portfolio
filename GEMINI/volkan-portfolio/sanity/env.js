@@ -1,5 +1,10 @@
 export const apiVersion =
-  process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2025-12-14'
+  process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-12-16'
 
-export const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
-export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+// BURAYI DEĞİŞTİRİYORUZ: Elle yazıyoruz
+export const dataset = 'production';
+
+// BURAYI DEĞİŞTİRİYORUZ: Vercel'den aldığımız ID'yi elle yazıyoruz
+export const projectId = '51z4jpfm';
+
+export const useCdn = false
